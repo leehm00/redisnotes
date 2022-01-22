@@ -286,10 +286,16 @@ redis可以通过PUBSUB subcommand命令查看频道或者模式相关信息；
 
 可以通过代码看到pubsub命令支持以下子命令：
 
-PUBSUB help  查帮助 
-PUBSUB CHANNELS [<pattern>]     获取当前服务器所有被订阅的channel，可选参数pattern：和pattern匹配的    遍历server->pubsub_channels；时间复杂度O(n)
-PUBSUB NUMSUB [Channel_1 ... Channel_N] 返回给定各个channel的订约这数量 遍历server->pubsub_channels;时间复杂度O(k) 传入参数的数量
-PUBSUB NUMPAT   返回服务器当前被订约的模式的数量    直接返回server->pubsub_patterns 列表长度 ；时间复杂度O(1)
+- PUBSUB help  查帮助 
+
+- PUBSUB CHANNELS [<pattern>]     获取当前服务器所有被订阅的channel
+  - 可选参数pattern：返回和pattern匹配的频道
+  - 需要遍历server->pubsub_channels；时间复杂度O(n)
+- PUBSUB NUMSUB [Channel_1 ... Channel_N] 返回给定各个channel的订阅者数量。对于每个channel都有相应的返回值
+  - 在pubsub_channels字典中找到频道对应的订阅者链表，然后返回订阅者链表的长度来实现(订阅者链表的长度就是频道订阅者的数量 )
+  -  遍历server->pubsub_channels；时间复杂度O(k) 传入参数的数量
+- PUBSUB NUMPAT   返回服务器当前被订阅的模式的数量    
+  - 直接返回server->pubsub_patterns 列表长度 ；时间复杂度O(1)
 
 PUBSUB的实现入口位于pubsub.c/pubsubCommand;
 
