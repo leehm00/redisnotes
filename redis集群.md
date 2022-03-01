@@ -1029,7 +1029,7 @@ clusterCommand函数接受到replicate命令后主要做了一下几件事：
   当前节点是否分配了槽？
   ......
 
-复合要求设置条件后，调用clusterSetMaster函数，clusterSetMaster主要用于修正clusterState中的属性值（可以参考上面贴出的注释）；
+复合要求设置条件后，调用clusterSetMaster函数，clusterSetMaster主要用于修正clusterState中的属性值（可以参考下面贴出的注释）；
 
  之后还需要设置当前节点为从节点，代码实现在**clster.c/clusterSetMaster**
 
@@ -1087,7 +1087,7 @@ typedef struct clusterNodeFailReport {
 
 ![image-20211129194942175](redis集群.assets/image-20211129194942175.png)
 
-注意这个是保存在7001那里的
+注意这个是保存在7001那里的，前面还有他的ClusterState结构，指向7001保存的7000node相关信息。
 
 如果某节点发现集群中超过半数已经以上的主节点 将x节点标记为P_FAIL,那么x节点将被标记为FAIL（客观下线），这个节点还会向集群广播x节点的FAIL下线消息，收到消息的节点都会直接把x节点标记为下线
 
@@ -1292,7 +1292,7 @@ FAIL消息体的定义位于cluster.h/clusterMsgDataFail
 
 `PUBLISH <channel> <msg>`
 
-当某节点接受到PUBLISH 消息，不仅会向自己的channel发送msg消息，还会向集群广播一条PUBLISH消息，是集群中所有系欸但那都对于自己的channel发送一条msg消息；
+当某节点接受到PUBLISH 消息，不仅会向自己的channel发送msg消息，还会向集群广播一条PUBLISH消息，是集群中所有节点都对于自己的channel发送一条msg消息；
 
 publish消息的消息体定义位于cluster.h/clusterMsgDataPublish
 
